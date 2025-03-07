@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.pharmacy.mapper.DrugMapper">
+
+    <!-- 分页查询药品（带搜索） -->
+    <select id="findAll" resultType="com.example.pharmacy.entity.Drug">
+        SELECT * FROM drug
+        <where>
+            <if test="search != null and search.trim() != ''">
+                AND (name LIKE CONCAT('%', #{search}, '%') OR category LIKE CONCAT('%', #{search}, '%'))
+            </if>
+        </where>
+        ORDER BY updated_at DESC
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <!-- 统计符合条件的药品数量 -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM drug
+        <where>
+            <if test="search != null and search.trim() != ''">
+                AND (name LIKE CONCAT('%', #{search}, '%') OR category LIKE CONCAT('%', #{search}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <!-- 插入药品 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO drug (name, category, manufacturer, efficacy, stock, price, insurance_covered)
+        VALUES (#{name}, #{category}, #{manufacturer}, #{efficacy}, #{stock}, #{price}, #{insuranceCovered})
+    </insert>
+
+    <!-- 更新药品 -->
+    <update id="update">
+        UPDATE drug
+        SET name = #{name},
+            category = #{category},
+            manufacturer = #{manufacturer},
+            efficacy = #{efficacy},
+            stock = #{stock},
+            price = #{price},
+            insurance_covered = #{insuranceCovered}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

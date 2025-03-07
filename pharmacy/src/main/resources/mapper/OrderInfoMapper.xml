@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.pharmacy.mapper.OrderInfoMapper">
+    <select id="queryOrders" parameterType="OrderQueryDTO" resultType="OrderInfo">
+        SELECT * FROM order_info
+        <where>
+            <if test="query.id != null and query.id != ''">
+                AND id = #{query.id}
+            </if>
+            <if test="query.userId != null and query.userId != ''">
+                AND user_id = #{query.userId}
+            </if>
+            <if test="query.status != null and query.status != ''">
+                AND status = #{query.status}
+            </if>
+            <if test="query.paymentMethod != null and query.paymentMethod != ''">
+                AND payment_method = #{query.paymentMethod}
+            </if>
+            <if test="query.dateRange != null and query.dateRange.size() == 2">
+                AND create_time BETWEEN #{query.dateRange[0]} AND #{query.dateRange[1]}
+            </if>
+        </where>
+    </select>
+</mapper>
