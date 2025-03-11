@@ -14,39 +14,52 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @WebFilter("/*")
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private final JwtUtil jwtUtil;
+
+    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
         String token = request.getHeader("Authorization");
 
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7); // 去掉 "Bearer " 前缀
+        if (token == null || !token.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            try {
-                if (!JwtUtil.isTokenExpired(token)) {
-                    String username = JwtUtil.getUsernameFromToken(token);
-                    if (username != null) {
-                        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(username, null, authorities);
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
-                } else {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token 已过期");
-                    return;
-                }
-            } catch (Exception e) {
-                System.out.println("Token 解析失败: " + e.getMessage()); // 捕获异常并打印
-                e.printStackTrace();
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "无效的 Token");
-                return; // 处理异常，例如 token 解析失败等
+        try {
+            // 使用 JwtUtil 自动去掉 Bearer 前缀
+            String username = jwtUtil.getUsernameFromToken(token);
+            String role = jwtUtil.getRoleFromToken(token);
+
+            if (jwtUtil.isTokenExpired(token)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token 已过期");
+                return;
             }
+
+            if (username != null) {
+                List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(username, null, authorities);
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "无效的 Token");
+            return;
         }
 
         filterChain.doFilter(request, response);

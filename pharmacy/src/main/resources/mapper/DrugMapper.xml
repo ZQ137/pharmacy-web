@@ -1,33 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.pharmacy.mapper.DrugMapper">
+<mapper namespace="com.example.pharmacy.admin.drug.mapper.DrugMapper">
 
-    <!-- 分页查询药品（带搜索） -->
-    <select id="findAll" resultType="com.example.pharmacy.entity.Drug">
+    <!--条件查询药品-->
+    <select id="findDrugsByCondition" resultType="com.example.pharmacy.admin.drug.entity.Drug">
         SELECT * FROM drug
-        <where>
-            <if test="search != null and search.trim() != ''">
-                AND (name LIKE CONCAT('%', #{search}, '%') OR category LIKE CONCAT('%', #{search}, '%'))
-            </if>
-        </where>
-        ORDER BY updated_at DESC
-        LIMIT #{offset}, #{size}
-    </select>
-
-    <!-- 统计符合条件的药品数量 -->
-    <select id="count" resultType="int">
-        SELECT COUNT(*) FROM drug
-        <where>
-            <if test="search != null and search.trim() != ''">
-                AND (name LIKE CONCAT('%', #{search}, '%') OR category LIKE CONCAT('%', #{search}, '%'))
-            </if>
-        </where>
+        WHERE 1 = 1
+        <if test="query.name != null and query.name != ''">
+            AND name LIKE CONCAT('%',#{query.name} ,'%')
+        </if>
+        <if test="query.category != null and query.category != ''">
+            AND category LIKE CONCAT('%',#{query.category} ,'%')
+        </if>
+        <if test="query.manufacturer != null and query.manufacturer != ''">
+            AND manufacturer LIKE CONCAT('%',#{query.manufacturer} ,'%')
+        </if>
+        <if test="query.insuranceCovered != null and query.insuranceCovered != ''">
+            AND insuranceCovered LIKE CONCAT('%',#{query.insuranceCovered} ,'%')
+        </if>
     </select>
 
     <!-- 插入药品 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO drug (name, category, manufacturer, efficacy, stock, price, insurance_covered)
-        VALUES (#{name}, #{category}, #{manufacturer}, #{efficacy}, #{stock}, #{price}, #{insuranceCovered})
+        INSERT INTO drug (name, category, manufacturer, efficacy, stock, price, insurance_covered,created_at,updated_at)
+        VALUES (#{name}, #{category}, #{manufacturer}, #{efficacy}, #{stock}, #{price}, #{insuranceCovered},#{createdAt},#{updatedAt})
     </insert>
 
     <!-- 更新药品 -->
@@ -40,6 +36,7 @@
             stock = #{stock},
             price = #{price},
             insurance_covered = #{insuranceCovered}
+            updated_at = #{updatedAt}
         WHERE id = #{id}
     </update>
 

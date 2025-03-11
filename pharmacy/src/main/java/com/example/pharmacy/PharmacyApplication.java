@@ -8,8 +8,7 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
 @SpringBootApplication
-@MapperScan("com.example.pharmacy.mapper")
-//@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
+@MapperScan("com.example.pharmacy.admin.*.mapper")
 public class PharmacyApplication {
 
     public static void main(String[] args) {
