@@ -10,3 +10,10 @@ mybatis:
   type-aliases-package: com.example.pharmacy.entity
   configuration:
     map-underscore-to-camel-case: true  # 开启驼峰命名转换
+
+springdoc:
+  api-docs:
+    enabled: true   # 启用 API 文档
+  swagger-ui:
+    enabled: true   # 启用 Swagger UI 界面
+    path: /swagger-ui.html  # 访问路径 http://localhost:8080/swagger-ui/index.html

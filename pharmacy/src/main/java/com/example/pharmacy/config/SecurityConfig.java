@@ -4,9 +4,11 @@ import com.example.pharmacy.filters.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig{
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -30,15 +33,21 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // 关闭 CSRF 防护
+                .csrf(AbstractHttpConfigurer::disable) // 关闭 CSRF 防护
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 关闭 session
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
                         .requestMatchers("/", "/index.html", "/register", "/login", "/static/**", "/assets/**").permitAll()
                         .requestMatchers("/api/user/register", "/api/user/login").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.disable()) // 禁用默认登录页
-                .httpBasic(httpBasic -> httpBasic.disable()) // 禁用 Basic 认证
+                .formLogin(AbstractHttpConfigurer::disable) // 禁用默认登录页
+                .httpBasic(AbstractHttpConfigurer::disable) // 禁用 Basic 认证
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 添加 JWT 认证过滤器
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())); // 使 CORS 配置生效
 
