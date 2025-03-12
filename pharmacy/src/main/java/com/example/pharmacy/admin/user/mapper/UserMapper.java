@@ -13,11 +13,21 @@ public interface UserMapper {
 
     /**
      * 根据用户名查询单个用户
+     *
      * @param username
      * @return
      */
     @Select("SELECT * FROM user WHERE username = #{username}")
     Optional<User> findByUsername(String username);
+
+    /**
+     * 根据用户id查询用户
+     *
+     * @param id
+     * @return
+     */
+    @Select("SELECT * FROM user WHERE id = #{id}")
+    Optional<User> findById(Long id);
 
     /**
      * 条件查询多个用户
@@ -50,5 +60,12 @@ public interface UserMapper {
      * @param id
      */
     @Delete("DELETE FROM user WHERE id = #{id}")
-    void deleteUser(Integer id);
+    void deleteUser(Long id);
+
+    /**
+     * 批量删除用户
+     *
+     * @param ids 用户ID列表
+     */
+    void batchDeleteUsers(@Param("ids") List<Long> ids);
 }

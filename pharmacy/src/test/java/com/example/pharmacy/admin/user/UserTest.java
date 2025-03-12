@@ -102,8 +102,8 @@ public class UserTest {
     /** 测试删除用户 */
     @Test
     void testDeleteUser() {
-        userService.deleteUser(1);
-        verify(userMapper, times(1)).deleteUser(1);
+        userService.deleteUser(1L);
+        verify(userMapper, times(1)).deleteUser(1L);
     }
 
     /** 测试获取用户信息 */

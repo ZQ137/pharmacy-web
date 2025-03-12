@@ -8,15 +8,11 @@ import com.example.pharmacy.admin.drug.entity.vo.DrugVO;
 import com.example.pharmacy.admin.drug.mapper.DrugMapper;
 import com.example.pharmacy.common.ErrorCode;
 import com.example.pharmacy.common.PageResult;
-import com.example.pharmacy.common.Result;
 import com.example.pharmacy.exception.CustomException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -67,7 +63,7 @@ public class DrugService {
      */
     public void saveDrug(DrugAddDTO drugAddDTO) {
         if (drugAddDTO.getName() != null) {
-            throw new CustomException(ErrorCode.MEDICINE_ALREADY_EXISTS);
+            throw new CustomException(ErrorCode.DRUG_ALREADY_EXISTS);
         }
         Drug drug = new Drug();
         BeanUtils.copyProperties(drugAddDTO,drug);
@@ -85,7 +81,7 @@ public class DrugService {
      */
     public void deleteDrug(Long id) {
         if (drugMapper.findById(id) == null) {
-            throw new CustomException(ErrorCode.MEDICINE_NOT_FOUND);
+            throw new CustomException(ErrorCode.DRUG_NOT_FOUND);
         }
         drugMapper.delete(id);
     }
@@ -97,7 +93,7 @@ public class DrugService {
      */
     public void updateDrug(DrugUpdateDTO drugUpdateDTO) {
         if (drugMapper.findById(drugUpdateDTO.getId()) == null) {
-            throw new CustomException(ErrorCode.MEDICINE_NOT_FOUND);
+            throw new CustomException(ErrorCode.DRUG_NOT_FOUND);
         }
 
         Drug drug = new Drug();

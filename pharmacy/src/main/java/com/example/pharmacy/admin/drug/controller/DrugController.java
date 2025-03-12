@@ -48,7 +48,7 @@ public class DrugController {
     @Operation(summary = "根据id查询药品",description = "根据id查询")
     public Result<Drug> getDrugById(@PathVariable Long id){
         Optional<Drug> drug = drugService.getDrugById(id);
-        return drug.map(Result::success).orElseGet(() -> Result.error(ErrorCode.MEDICINE_NOT_FOUND));
+        return drug.map(Result::success).orElseGet(() -> Result.error(ErrorCode.DRUG_NOT_FOUND));
     }
 
     /**

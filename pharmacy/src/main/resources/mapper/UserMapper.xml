@@ -23,4 +23,12 @@
         ORDER BY created_at DESC
     </select>
 
+    <!-- 批量删除用户 -->
+    <delete id="batchDeleteUsers">
+        DELETE FROM user WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
 </mapper>

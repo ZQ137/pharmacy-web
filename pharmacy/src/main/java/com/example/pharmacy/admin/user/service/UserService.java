@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,7 +73,7 @@ public class UserService {
      *
      * @param id
      */
-    public void deleteUser(Integer id) {
+    public void deleteUser(Long id) {
         userMapper.deleteUser(id);
     }
 
@@ -108,8 +109,22 @@ public class UserService {
 
         User user = userOpt.get();
         BeanUtils.copyProperties(userAddDTO, user);
+        user.setCreatedAt(LocalDateTime.now());
+
         userMapper.insertUser(user);
     }
 
+    /**
+     * 批量删除用户
+     *
+     * @param ids 用户ID列表
+     */
+    public void batchDeleteUsers(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            throw new CustomException(ErrorCode.INVALID_PARAMETER, "用户ID列表不能为空");
+        }
+
+        userMapper.batchDeleteUsers(ids);
+    }
 
 }

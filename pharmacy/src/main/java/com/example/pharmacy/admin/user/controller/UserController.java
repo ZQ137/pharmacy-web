@@ -94,9 +94,23 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "删除用户", description = "删除用户")
-    public Result<?> deleteUser(@PathVariable Integer id) {
+    public Result<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return Result.success("用户删除成功");
+    }
+
+    /**
+     * 批量删除用户
+     *
+     * @param ids 用户ID列表
+     * @return
+     */
+    @DeleteMapping("/batchDelete")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "批量删除用户", description = "批量删除用户，仅限管理员")
+    public Result<?> batchDeleteUsers(@RequestBody List<Long> ids) {
+        userService.batchDeleteUsers(ids);
+        return Result.success("用户批量删除成功");
     }
 
 }

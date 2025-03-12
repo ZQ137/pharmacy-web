@@ -35,6 +35,4 @@ public class UserAddDTO {
     @Schema(description = "医保卡号",example = "420454678213")
     private String insuranceNumber;
 
-    @Schema(description = "创建时间",example = "2025-03-02 20:13:42")
-    private LocalDateTime createdAt;
 }

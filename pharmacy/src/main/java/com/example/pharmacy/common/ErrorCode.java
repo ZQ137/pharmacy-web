@@ -20,10 +20,16 @@ public enum ErrorCode {
     USER_NOT_FOUND_OR_PASSWORD_ERROR(1004,"用户不存在或密码错误"),
     TOKEN_EXPIRED(1004,"Token已过期"),
     TOKEN_INVALID(1005,"Token无效"),
+    INVALID_PARAMETER(1006,"无效参数"),
 
-    MEDICINE_NOT_FOUND(2001, "药品不存在"),
-    MEDICINE_ALREADY_EXISTS(2002,"药品已存在")
+    DOCTOR_NOT_FOUND(2001,"医生不存在"),
 
+    DRUG_NOT_FOUND(3001, "药品不存在"),
+    DRUG_ALREADY_EXISTS(3002,"药品已存在"),
+
+    CONSULTATION_NOT_FOUND(5001,"问诊记录不存在"),
+
+    STOCK_NOT_ENOUGH(6001,"库存不足"),
     ;
 
     private final Integer code;
