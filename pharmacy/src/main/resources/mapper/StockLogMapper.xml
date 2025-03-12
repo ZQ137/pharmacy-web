@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.pharmacy.admin.stock.mapper.StockLogMapper">
+
+    <insert id="insertStockLog">
+        INSERT INTO stock_log (id,drug_id,change_type,change_quantity,remaining_stock,created_at)
+        VALUES (#{id},#{drugId},#{changeType},#{changeQuantity},#{remainingStock},#{createdAt})
+    </insert>
+
+    <!-- 获取所有药品库存信息 -->
+    <select id="findAllStock" resultType="com.example.pharmacy.admin.stock.entity.vo.DrugStockVO">
+        SELECT id AS drugId, name, stock, updated_at AS updatedAt
+        FROM drug
+    </select>
+
+    <!-- 获取单个药品库存信息 -->
+    <select id="findStockById" parameterType="int" resultType="com.example.pharmacy.admin.stock.entity.vo.DrugStockVO">
+        SELECT id AS drugId, name, stock, updated_at AS updatedAt
+        FROM drug
+        WHERE id = #{drugId}
+    </select>
+
+    <!-- 获取库存低于预警阈值的药品 -->
+    <select id="findLowStockDrugs" parameterType="int" resultType="com.example.pharmacy.admin.stock.entity.vo.DrugStockVO">
+        SELECT id AS drugId, name, stock, updated_at AS updatedAt
+        FROM drug
+        WHERE stock &lt; #{threshold}
+    </select>
+
+    <!-- 根据药品ID查询药品 -->
+    <select id="findById" parameterType="int" resultType="com.example.pharmacy.admin.drug.entity.Drug">
+        SELECT id, name, category, manufacturer, efficacy, stock, price, insurance_covered, created_at, updated_at
+        FROM drug
+        WHERE id = #{drugId}
+    </select>
+
+    <!-- 更新药品库存 -->
+    <update id="updateStock">
+        UPDATE drug
+        SET stock = #{stock}, updated_at = NOW()
+        WHERE id = #{drugId}
+    </update>
+
+</mapper>
